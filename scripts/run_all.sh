@@ -62,9 +62,12 @@ gcloud artifacts repositories create $REPOSITORY \
     --location=$LOCATION \
     --description="Repository for keeping Docker images"
 
+# Before, need to connect Github repository using UI
+# https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github
 # Create Cloud Build trigger
 gcloud beta builds triggers create github \
-    --region=$LOCATION \
+    --name="dbt-run" \
+    --included-files="jaffle_shop/*" \
     --repo-name=$REPO_NAME \
     --repo-owner=$REPO_OWNER \
     --branch-pattern="^main$" \

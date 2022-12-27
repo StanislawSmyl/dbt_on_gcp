@@ -2,9 +2,9 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}', '.']
 
-- name: 'gcr.io/cloud-builders/docker'
-  entrypoint: 'bash'
-  args: ['-c', 'docker push ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}']
+#- name: 'gcr.io/cloud-builders/docker'
+#  entrypoint: 'bash'
+#  args: ['-c', 'docker push ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}']
 
 - id: 'dbt-run'
   name: '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:latest'
@@ -12,9 +12,9 @@ steps:
   secretEnv: ['DBT_SA']
   env: ['PROJECT_ID=$PROJECT_ID', 'LOCATION=$_LOCATION']
   args: ['./dbt_cd.sh']
-#
-#images:
-#  - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}'
+
+images:
+  - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}'
 
 substitutions:
   _IMAGE_NAME: 'dbt'
