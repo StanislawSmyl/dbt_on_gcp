@@ -37,7 +37,7 @@ models:
     +persist_docs:
       relation: true
       columns: true
-    # Config indicated by + and applies to all files under models/example/
+    # Applies to all files under models/example/
     example:
       +materialized: view
       +schema: jaffle_shop

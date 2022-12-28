@@ -2,10 +2,6 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}', '.']
 
-#- name: 'gcr.io/cloud-builders/docker'
-#  entrypoint: 'bash'
-#  args: ['-c', 'docker push ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}']
-
 - id: 'dbt-run'
   name: '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:latest'
   entrypoint: 'sh'

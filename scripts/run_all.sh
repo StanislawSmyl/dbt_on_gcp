@@ -10,7 +10,7 @@ export REPO_NAME="dbt_on_gcp"
 export REPO_OWNER="StanislawSmyl"
 
 # Initialize dbt environment
-dbt init
+dbt init jaffle_shop
 
 # Create Service Account for running dbt workflows
 export SA_NAME="dbt-sa"
@@ -42,16 +42,16 @@ gcloud secrets versions add $SECRET_NAME --data-file="$SA_KEY_FILE"
 # Add permission for Cloud Build SA to access this Secret
 gcloud secrets add-iam-policy-binding projects/$PROJECT_ID/secrets/$SECRET_NAME \
   --member serviceAccount:$PROJECT_NR@cloudbuild.gserviceaccount.com \
-  --role roles/secretmanager.secretAccessor
+  --role "roles/secretmanager.secretAccessor"
 
 
-# Create bucket with versioning enabled
+# Create new bucket using environment variable declared before
 gcloud storage buckets create gs://$BUCKET_NAME --location $LOCATION
 
 # Add object versioning support
 gcloud storage buckets update gs://$BUCKET_NAME --versioning
 
-# Add empty manifest file so CD works
+# Copy local manifest file into new bucket
 gsutil cp target/manifest.json gs://$BUCKET_NAME
 
 # Create new Artifact Registry repository called "docker"
@@ -60,14 +60,14 @@ export REPOSITORY="docker"
 gcloud artifacts repositories create $REPOSITORY \
     --repository-format=Docker \
     --location=$LOCATION \
-    --description="Repository for keeping Docker images"
+    --description="Repository for Docker images"
 
 # Before, need to connect Github repository using UI
 # https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github
 # Create Cloud Build trigger
 gcloud beta builds triggers create github \
     --name="dbt-run" \
-    --included-files="jaffle_shop/*" \
+    --included-files="jaffle_shop/**" \
     --repo-name=$REPO_NAME \
     --repo-owner=$REPO_OWNER \
     --branch-pattern="^main$" \
